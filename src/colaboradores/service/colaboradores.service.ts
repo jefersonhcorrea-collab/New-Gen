@@ -40,12 +40,7 @@ export class ColaboradoresService{
 }
            
     async create (colaboradores: Colaboradores): Promise<Colaboradores> {
-         const buscarColaborador = await this.findById(colaboradores.id);
-
-         if (buscarColaborador)
-            throw new HttpException('Colaborador já cadastrado!', HttpStatus.BAD_REQUEST);
-
-         return await this.colaboradoresRepository.save(colaboradores);
+        return await this.colaboradoresRepository.save(colaboradores);
 }
 
    
