@@ -8,6 +8,7 @@ export class FolhaPagamentoService {
     constructor(
         @InjectRepository(FolhaPagamento)
         private folhaPagamentoRepository: Repository<FolhaPagamento>
+        
     ){}
 
     async findAll(): Promise<FolhaPagamento[]>{
@@ -27,7 +28,21 @@ export class FolhaPagamentoService {
     }
 
     async create(folhaPagamento: FolhaPagamento): Promise<FolhaPagamento> {
-        return await this.folhaPagamentoRepository.save(folhaPagamento);
+        const colaborador = await this.folhaPagamentoRepository.findOne({
+        where: { id: folhaPagamento.colaboradores.id }
+    });
+
+    if (!colaborador) {
+        throw new HttpException('Colaborador não encontrado', HttpStatus.NOT_FOUND);
+    }
+
+    const salarioFinal = folhaPagamento.salarioCalculado;
+    folhaPagamento.salarioFinal = salarioFinal; 
+
+    colaborador.salarioFinal = salarioFinal;
+    await this.folhaPagamentoRepository.save(colaborador);
+
+    return await this.folhaPagamentoRepository.save(folhaPagamento);
     }
 
     async update(folhaPagamento: FolhaPagamento): Promise<FolhaPagamento> {

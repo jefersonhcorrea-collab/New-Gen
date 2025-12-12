@@ -6,26 +6,39 @@ import { Colaboradores } from "../../colaboradores/entities/colaboradores.entity
 export class FolhaPagamento {
 
 @PrimaryGeneratedColumn()
-id: number
+id: number;
 
 @IsNotEmpty()
 @Column({nullable: false})
-idColaborador: number
+idColaborador: number;
 
 @IsNotEmpty()
 @Column({ type: 'decimal', precision: 4, scale: 2, nullable: false })
-totalHoras: number
+totalHoras: number;
 
 @IsNotEmpty()
 @Column({ type: 'decimal', precision: 5, scale: 2, nullable: false })
-valorHora: number
+valorHora: number;
 
 @IsNotEmpty()
 @Column({ type: 'decimal', precision: 6, scale: 2, nullable: false })
-descontos: number
+descontos: number;
+
+@IsNotEmpty()
+@Column({ type: 'decimal', precision: 6, scale: 2, nullable: false })
+bonus : number;
+
+@Column({ type: 'decimal', precision: 6, scale: 2, nullable: false })
+salarioFinal: number
 
 @ManyToOne(() => Colaboradores, (colaboradores) => colaboradores.folhaPagamento, {
     onDelete: "CASCADE"
 })
 colaboradores: Colaboradores;
+
+get salarioCalculado(): number {
+        const bruto = Number(this.totalHoras) * Number(this.valorHora);
+        const liquido = bruto + Number(this.bonus) - Number(this.descontos);
+        return Number(liquido.toFixed(2));
+    }
 }

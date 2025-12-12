@@ -39,8 +39,6 @@ export class FolhaPagamentoController {
     delete(@Param('id', ParseIntPipe) id: number): Promise<DeleteResult> {
         return this.folhaPagamentoService.delete(id); 
     }
-
-       
 }
 
 
