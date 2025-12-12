@@ -27,7 +27,7 @@ findByStatus(@Param('status') status: boolean): Promise<Colaboradores[]> {
     return this.colaboradoresService.findByStatus(status);
 }
 
-@Post()
+@Post('/criate')
 @HttpCode(HttpStatus.CREATED)
 create(@Body() colaborador: Colaboradores): Promise<Colaboradores> {
     return this.colaboradoresService.create(colaborador);

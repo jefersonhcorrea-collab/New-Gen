@@ -2,47 +2,43 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { DeleteResult, Repository } from "typeorm";
 import { FolhaPagamento } from "../entities/folha-pagamento.entity";
 import { InjectRepository } from "@nestjs/typeorm";
+import { Colaboradores } from "../../colaboradores/entities/colaboradores.entity";
 
 @Injectable()
 export class FolhaPagamentoService {
     constructor(
         @InjectRepository(FolhaPagamento)
         private folhaPagamentoRepository: Repository<FolhaPagamento>
-        
-    ){}
+    ) { }
 
-    async findAll(): Promise<FolhaPagamento[]>{
+    async findAll(): Promise<FolhaPagamento[]> {
         return await this.folhaPagamentoRepository.find()
     }
 
-    async findById(id: number): Promise<FolhaPagamento>{
+    async findById(id: number): Promise<FolhaPagamento> {
         const folhaPagamento = await this.folhaPagamentoRepository.findOne({
-            where:{
+            where: {
                 id
             }
         })
         if (!folhaPagamento)
             throw new HttpException('folha de pagamento não encontrada', HttpStatus.NOT_FOUND)
-        
+
         return folhaPagamento
     }
 
-    async create(folhaPagamento: FolhaPagamento): Promise<FolhaPagamento> {
-        const colaborador = await this.folhaPagamentoRepository.findOne({
-        where: { id: folhaPagamento.colaboradores.id }
-    });
+    async create(folhaPagamento: FolhaPagamento): Promise<any> {
+       const folha = await this.folhaPagamentoRepository.save(folhaPagamento);
+       const salarioFinal = folhaPagamento.totalHoras * folhaPagamento.valorHora + folhaPagamento.bonus - folhaPagamento.descontos;
 
-    if (!colaborador) {
-        throw new HttpException('Colaborador não encontrado', HttpStatus.NOT_FOUND);
+       return {
+        ...folha,
+        salarioFinal
+       }
     }
 
-    const salarioFinal = folhaPagamento.salarioCalculado;
-    folhaPagamento.salarioFinal = salarioFinal; 
-
-    colaborador.salarioFinal = salarioFinal;
-    await this.folhaPagamentoRepository.save(colaborador);
-
-    return await this.folhaPagamentoRepository.save(folhaPagamento);
+    calcularSalario(folhaPagamento: FolhaPagamento) {
+        return folhaPagamento.totalHoras * folhaPagamento.valorHora + folhaPagamento.bonus - folhaPagamento.descontos;
     }
 
     async update(folhaPagamento: FolhaPagamento): Promise<FolhaPagamento> {
@@ -54,4 +50,5 @@ export class FolhaPagamentoService {
         await this.findById(id);
         return await this.folhaPagamentoRepository.delete(id);
     }
+
 }
