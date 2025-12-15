@@ -33,9 +33,7 @@ export class ColaboradoresService{
         return await this.colaboradoresRepository.find({
             where: { 
                 status },
-            /*relations: {
-                folhasPagamento: true,
-      }*/
+            
   });
 }
            
@@ -43,9 +41,10 @@ export class ColaboradoresService{
         return await this.colaboradoresRepository.save(colaboradores);
 }
 
-   
-   async update (colaboradores: Colaboradores): Promise<Colaboradores> {
-        return await this.findById(colaboradores.id);
+   //alterado
+   async update (colaboradores: Colaboradores): Promise<Colaboradores> { 
+        await this.findById(colaboradores.id)
+        return await this.colaboradoresRepository.save(colaboradores);
     }
    
  async delete(id: number): Promise<void> {

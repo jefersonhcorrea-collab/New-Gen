@@ -2,7 +2,6 @@ import { Controller, ParseIntPipe, Get, HttpCode, HttpStatus, Param, Post, Put }
 import { Body, Delete } from "@nestjs/common/decorators";
 import { FolhaPagamento } from "../entities/folha-pagamento.entity";
 import { FolhaPagamentoService } from "../service/folha-pagamento.service";
-import { DeleteQueryBuilder } from "typeorm/browser";
 import { DeleteResult } from "typeorm/browser";
 
 
@@ -21,6 +20,11 @@ export class FolhaPagamentoController {
     findById(@Param('id', ParseIntPipe) id: number): Promise<FolhaPagamento> { 
         return this.folhaPagamentoService.findById(id);
     } 
+
+    @Get('/colaborador/:id')
+    findByColaborador(@Param('id') id: number) {
+    return this.folhaPagamentoService.findByColaboradorId(id);
+}
 
     @Post()
     @HttpCode(HttpStatus.CREATED)

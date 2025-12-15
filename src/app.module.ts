@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Colaboradores } from './colaboradores/entities/colaboradores.entity';
 import { FolhaPagamento } from './folha-pagamento/entities/folha-pagamento.entity';

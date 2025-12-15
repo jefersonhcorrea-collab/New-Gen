@@ -21,7 +21,7 @@ findById(@Param('id', ParseIntPipe) id: number): Promise<Colaboradores> {
     return this.colaboradoresService.findById(id);
 }
 
-@Get('/status')
+@Get('/status/:status')
 @HttpCode(HttpStatus.OK)
 findByStatus(@Param('status') status: boolean): Promise<Colaboradores[]> {
     return this.colaboradoresService.findByStatus(status);
@@ -36,7 +36,7 @@ create(@Body() colaborador: Colaboradores): Promise<Colaboradores> {
 @Put()
 @HttpCode(HttpStatus.OK)
 update(@Body() colaborador: Colaboradores): Promise<Colaboradores> {
-    return this.colaboradoresService.create(colaborador);
+    return this.colaboradoresService.update(colaborador);
 }
 
 @Delete('/:id')
