@@ -11,8 +11,17 @@ export class FolhaPagamentoService {
         private folhaPagamentoRepository: Repository<FolhaPagamento>
     ) { }
 
-    async findAll(): Promise<FolhaPagamento[]> {
-        return await this.folhaPagamentoRepository.find()
+    async findAll() {
+        const findFolhas = await this.folhaPagamentoRepository.find({
+            relations: {
+                colaboradores: true
+            },
+        });
+
+        return findFolhas.map(findFolhas => ({
+            ...findFolhas,
+            salarioFinal: this.calcularSalario(findFolhas)
+        }));
     }
 
     async findById(id: number): Promise<FolhaPagamento> {
@@ -29,7 +38,7 @@ export class FolhaPagamentoService {
 
     async create(folhaPagamento: FolhaPagamento): Promise<any> {
        const folha = await this.folhaPagamentoRepository.save(folhaPagamento);
-       const salarioFinal = folhaPagamento.totalHoras * folhaPagamento.valorHora + folhaPagamento.bonus - folhaPagamento.descontos;
+       const salarioFinal = this.calcularSalario;
 
        return {
         ...folha,

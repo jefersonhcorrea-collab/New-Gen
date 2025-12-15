@@ -12,7 +12,11 @@ export class ColaboradoresService{
     ) {}
 
     async findAll(): Promise<Colaboradores[]> {
-        return await this.colaboradoresRepository.find();
+        return await this.colaboradoresRepository.find({
+            relations: {
+                folhaPagamento: true
+            }
+        });
     }
 
     async findById(id: number): Promise<Colaboradores> {
