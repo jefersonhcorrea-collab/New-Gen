@@ -1,4 +1,12 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, JoinColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  JoinColumn,
+  BeforeInsert,
+  BeforeUpdate,
+} from "typeorm";
 import { Colaboradores } from "../../colaboradores/entities/colaboradores.entity";
 
 @Entity({ name: 'tb_folha_pagamento' })
@@ -13,13 +21,13 @@ export class FolhaPagamento {
   @Column({ type: 'decimal', precision: 6, scale: 2, nullable: false })
   valorHora: number;
 
-  @Column({ type: 'decimal', precision: 6, scale: 2, nullable: false })
+  @Column({ type: 'decimal', precision: 6, scale: 2, nullable: false, default: 0 })
   descontos: number;
 
-  @Column({ type: 'decimal', precision: 6, scale: 2, nullable: false })
+  @Column({ type: 'decimal', precision: 6, scale: 2, nullable: false, default: 0 })
   bonus: number;
 
-  @Column({ type: 'decimal', precision: 8, scale: 2, nullable: false })
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
   salarioFinal: number;
 
   @ManyToOne(() => Colaboradores, (col) => col.folhaPagamento, {
@@ -28,9 +36,11 @@ export class FolhaPagamento {
   @JoinColumn({ name: 'idColaborador' })
   colaboradores: Colaboradores;
 
-  get salarioCalculado(): number {
+  @BeforeInsert()
+  @BeforeUpdate()
+  calcularSalario() {
     const bruto = Number(this.totalHoras) * Number(this.valorHora);
     const liquido = bruto + Number(this.bonus) - Number(this.descontos);
-    return Number(liquido.toFixed(2));
+    this.salarioFinal = Number(liquido.toFixed(2));
   }
 }
